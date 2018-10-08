@@ -1,9 +1,9 @@
 package router
 
 import (
-    "strings"
-    "fmt"
+	"fmt"
 	"log"
+	"strings"
 )
 
 // A PrefixTree is a binary trie providing efficient lookups of IPv4 addresses.
@@ -33,8 +33,8 @@ func (p *PrefixTree) Add(r Route) {
 				current.Route = r.To
 				return
 			}
-            // Iterate over byte bits from left
-			if 1 == 1 & (r.Masked[i] >> (7 - j)) {
+			// Iterate over byte bits from left
+			if 1 == 1&(r.Masked[i]>>(7-j)) {
 				// Step deeper as 1
 				if current.One == nil {
 					current.One = NewPrefixTree()
@@ -61,12 +61,12 @@ func (p *PrefixTree) Drop(r Route) {
 	for i = 0; i < 4; i++ {
 		pastByteBits = i * 8
 		for j = 0; j < 8; j++ {
-			if r.Prefix == j + pastByteBits {
+			if r.Prefix == j+pastByteBits {
 				// Found it. Drop route, whether it exists or not.
 				current.Route = nil
 				return
 			}
-            // Iterate over byte bits from left
+			// Iterate over byte bits from left
 			if 1 == (r.Masked[i] >> (7 - j)) {
 				// Step deeper as 1
 				if current.One == nil {
@@ -92,15 +92,15 @@ func (p *PrefixTree) Get(ipv4 IPv4) *IPv4 {
 	var lastBest *IPv4
 	var b byte
 	current := p
-    var i,j uint8
+	var i, j uint8
 	for i = 0; i < 4; i++ {
 		b = ipv4[i]
 		for j = 0; j < 8; j++ {
 			if current.Route != nil {
 				lastBest = current.Route
 			}
-            // Iterate over byte bits from left
-			if 1 == 1 & (b >> (7 - j)) {
+			// Iterate over byte bits from left
+			if 1 == 1&(b>>(7-j)) {
 				// Step deeper as 1
 				if current.One == nil {
 					return lastBest
@@ -120,33 +120,33 @@ func (p *PrefixTree) Get(ipv4 IPv4) *IPv4 {
 
 // String provides a simple debug string for the trie.
 func (p *PrefixTree) String() string {
-    zs, os, rs := "", "", ""
-    if p.Zero != nil {
-        zs = fmt.Sprintf(" 0: {\n%s\n}, ", p.Zero.string("  "))
-    }
-    if p.One != nil {
-        os = fmt.Sprintf(" 1: {\n%s\n}, ", p.One.string("  "))
-    }
-    if p.Route != nil {
-        rs = fmt.Sprintf(" R: %d.%d.%d.%d", p.Route[0], p.Route[1], p.Route[2], p.Route[3])
-    }
-    almost := strings.Trim(strings.Join([]string{zs, os, rs}, "\n"),  "\n")
-    return fmt.Sprintf("{\n%s\n}", almost)
+	zs, os, rs := "", "", ""
+	if p.Zero != nil {
+		zs = fmt.Sprintf(" 0: {\n%s\n}, ", p.Zero.string("  "))
+	}
+	if p.One != nil {
+		os = fmt.Sprintf(" 1: {\n%s\n}, ", p.One.string("  "))
+	}
+	if p.Route != nil {
+		rs = fmt.Sprintf(" R: %d.%d.%d.%d", p.Route[0], p.Route[1], p.Route[2], p.Route[3])
+	}
+	almost := strings.Trim(strings.Join([]string{zs, os, rs}, "\n"), "\n")
+	return fmt.Sprintf("{\n%s\n}", almost)
 }
 
 // string is used internally by String for recursive printing of subnodes
 // in the trie.
 func (p *PrefixTree) string(pad string) string {
-    zs, os, rs := "", "", ""
-    nextPad := fmt.Sprintf("%s  ", pad)
-    if p.Zero != nil {
-        zs = fmt.Sprintf("%s0: {\n%s\n%s},", pad, p.Zero.string(nextPad), pad)
-    }
-    if p.One != nil {
-        os = fmt.Sprintf("%s1: {\n%s\n%s},", pad, p.One.string(nextPad), pad)
-    }
-    if p.Route != nil {
-        rs = fmt.Sprintf("%sR: %d.%d.%d.%d", pad, p.Route[0], p.Route[1], p.Route[2], p.Route[3])
-    }
-    return strings.Trim(strings.Join([]string{zs, os, rs}, "\n"),  "\n")
+	zs, os, rs := "", "", ""
+	nextPad := fmt.Sprintf("%s  ", pad)
+	if p.Zero != nil {
+		zs = fmt.Sprintf("%s0: {\n%s\n%s},", pad, p.Zero.string(nextPad), pad)
+	}
+	if p.One != nil {
+		os = fmt.Sprintf("%s1: {\n%s\n%s},", pad, p.One.string(nextPad), pad)
+	}
+	if p.Route != nil {
+		rs = fmt.Sprintf("%sR: %d.%d.%d.%d", pad, p.Route[0], p.Route[1], p.Route[2], p.Route[3])
+	}
+	return strings.Trim(strings.Join([]string{zs, os, rs}, "\n"), "\n")
 }

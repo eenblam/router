@@ -1,3 +1,5 @@
+fmt:
+	gofmt -w *.go
 test:
 	go test -cover
 

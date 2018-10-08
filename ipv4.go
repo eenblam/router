@@ -53,11 +53,11 @@ func (i *IPv4) IsMask() bool {
 }
 
 func (i *IPv4) MaskWithPrefix(prefix uint8) *IPv4 {
-    mask, err := MaskFromPrefix(prefix)
-    if err != nil {
-        return nil
-    }
-    return i.MaskWith(*mask)
+	mask, err := MaskFromPrefix(prefix)
+	if err != nil {
+		return nil
+	}
+	return i.MaskWith(*mask)
 }
 
 func (i *IPv4) MaskWith(mask IPv4) *IPv4 {

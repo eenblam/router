@@ -8,15 +8,15 @@ type Route struct {
 }
 
 func NewRoute(address *IPv4, prefix uint8, to *IPv4) *Route {
-    if prefix > 32 {
-        return nil
-    }
-    return &Route{
-        Address: address,
-        Masked: address.MaskWithPrefix(prefix),
-        Prefix: prefix,
-        To: to,
-    }
+	if prefix > 32 {
+		return nil
+	}
+	return &Route{
+		Address: address,
+		Masked:  address.MaskWithPrefix(prefix),
+		Prefix:  prefix,
+		To:      to,
+	}
 }
 
 type Router interface {

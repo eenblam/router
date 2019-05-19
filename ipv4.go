@@ -25,25 +25,29 @@ func (i *IPv4) IsMask() bool {
 	var j uint
 	for _, v := range i {
 		if ones {
-			if v != 255 {
-				ones = false
-				// Validate byte as having only leading ones, if any
-				for j = 0; j < 8; j++ {
-					shifted := (v << j) & 255
-					bitIsZero := 128 != (shifted & 128)
-					shiftedZero := 0 == shifted
-					if bitIsZero {
-						if shiftedZero {
-							// Done with this byte
-							break
-						} else {
-							// Found a zero bit before zeroing the byte
-							return false
-						}
-					}
+			// Is this a whole byte of ones?
+			if v == 255 {
+				continue
+			}
+			ones = false
+			// Validate byte as having only leading ones, if any
+			for j = 0; j < 8; j++ {
+				shifted := (v << j) & 255
+				bitIsZero := 128 != (shifted & 128)
+				shiftedZero := 0 == shifted
+				if !bitIsZero {
+					continue
+				}
+				if shiftedZero {
+					// Done with this byte
+					break
+				} else {
+					// Found a zero bit before zeroing the byte
+					return false
 				}
 			}
 		} else {
+			// We've seen a 0 bit, so this byet should be all 0's, hence equal to 0.
 			if v != 0 {
 				return false
 			}
